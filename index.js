@@ -49,6 +49,10 @@ var izvodjacSchema = mongoose.Schema({
 //var Lokal = mongoose.model("Lokal", lokalSchema, "lokal");
 var Izvodjac = mongoose.model('Izvodjac', izvodjacSchema, 'izvodjac');
 
+app.get('/',function(req,res){
+  res.send("Hello world!");
+});
+
 app.get('/pesme', function(req, res){
   console.log(req.query);
 /*   let i = new Izvodjac({
