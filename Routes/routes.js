@@ -11,7 +11,9 @@ var router = express.Router();
 //////////////////////////////
 
 //OVDE U RUTER PLUGUJEMO RUTE IZ KONTROLERA
-
+router.route('/').get(function(req,res){
+    res.send("Hello Vorld");
+});
 router.route('/izvodjaci').get(izvodjacKontroler.getIzvodjaci);
 router.route('/izvodjac').get(izvodjacKontroler.getIzvodjac);
 router.route('/lokali').get(lokalKontroler.getLokali);
