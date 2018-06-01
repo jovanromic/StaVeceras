@@ -9,8 +9,12 @@
   "author": "Jovan R",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^2.0.1",
+    "body-parser": "^1.18.3",
+    "express": "*",
+    "express-session": "^1.15.6",
     "mongodb": "^3.0.7",
     "mongoose": "^5.0.16",
-	"express": "*"
+    "socket.io": "^2.1.1"
   }
 }

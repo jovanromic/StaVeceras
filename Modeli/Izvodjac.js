@@ -1,19 +1,29 @@
-var mongoose = require('mongoose');
+//import { ObjectId } from '../../../../../../../../../AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/bson';
 
-var izvodjacSchema = new mongoose.Schema({
+let mongoose = require('mongoose');
+
+/*let pesmaSchema = new mongoose.Schema({
+    Autor_i_Naziv: String,
+    Zanr: String
+});*/
+
+let izvodjacSchema = new mongoose.Schema({
     _id: String,
     Ime: String,
+    Username: String,
+    Password: String,
     Slika: String,
     Email: String,
     Ocena: Number,
     Telefon: String,
     Tip: String,
-    Lista_pesama: [{
-      Autor_i_Naziv: String,
-      Zanr: String
-    }]
-  }, { collection: 'izvodjac' });
+    Lista_pesama: [String]
+}, { collection: 'izvodjac' });
 
-  var Izvodjac = mongoose.model('Izvodjac', izvodjacSchema, 'izvodjac');
+let Izvodjac = mongoose.model('Izvodjac', izvodjacSchema, 'izvodjac');
+//let Pesma = mongoose.model('Pesma', pesmaSchema);
 
-  module.exports = Izvodjac;
+module.exports = {
+    Izvodjac: Izvodjac
+    //Pesma: Pesma
+};

@@ -105,3 +105,13 @@ function(err,doc){
 
 app.listen(process.env.PORT || 3000); //process env PORT jer heroku dinamicki dodeljuje port, a 3000 kad se pokrece sa localhosta
 
+
+
+/////////////
+//ovakav POST sa insertMany radi
+
+postIzvodjac : (req, res) => {
+  Izvodjac.insertMany([req.body], (err) => {
+      res.send("dodavanjee");
+  });
+}
