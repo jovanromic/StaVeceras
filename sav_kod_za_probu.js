@@ -115,3 +115,18 @@ postIzvodjac : (req, res) => {
       res.send("dodavanjee");
   });
 }
+
+/*postPesma : (req,res) => {
+        //let pesma = {Autor_i_Naziv : req.body.Autor_i_Naziv, Zanr : req.body.Zanr};
+        let pesma = new Pesma(req.body);
+        let ime = req.body.Ime;
+        //odrediti po kom parametru se kreira upit
+        Izvodjac.findOneAndUpdate({"Ime":ime},{ $push:{"Lista_pesama":pesma}},{new:true},(err,rezultat) =>{
+            res.send(rezultat);
+        });
+    },
+    getPesme :(req,res) => {
+        let izv;
+        Izvodjac.find({"Ime":req.query.Ime},'Lista_pesama', (err,rezultat) =>{
+            res.send(rezultat);
+        })*/

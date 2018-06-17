@@ -1,0 +1,21 @@
+za jocko zahtevi:
+
+prioritet lokali pa dogadjaji
+
+
+//logika za repertoar: na osnovu tipa dogadjaja se izvlacce pesme sa tim zanrom
+
+////////////////////Gotovo/////////////////////////
+1. poklapanje atributa u bazi i na klijentu - svi atributi mala slova, u lokalu ocena i fb stranica, dogadjaji umesto lista
+2.dogadjaj:  ime izvodjaca, naziv lokala i id lokala idu dodatno
+dogadjaj by id - isto kao gore samo jedan
+svi lokali: ne trebaju mu dogadjaji
+3. 1 lokal po id-ju : treba mu i cela lista svih dogadjaja - komplet objekat dogadjaja bez naziva lokala i idja lokala
+4. izvodjaci: informacije o njemu i lista id-jeva dogadjaja na kojima nastupa
+6. top 25 pesama - na osnovu ukupnog broja glasova
+////////////////////////////////////////////////////
+
+5. repertoar za prosledjen id dogadjaja
+
+
+useri i role na osnovu username i pw - nova tabela?

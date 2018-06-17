@@ -4,67 +4,142 @@
 
 let izvodjacModels = require('../Modeli/Izvodjac.js');
 let Izvodjac = izvodjacModels.Izvodjac;
+
 let PesmaModels = require('../Modeli/Pesma.js');
 let Pesma = PesmaModels.Pesma;
-//let Pesma = izvodjacModels.Pesma;
+
+let dogadjajModels = require('../Modeli/Dogadjaj');
+let Dogadjaj = dogadjajModels.Dogadjaj;
+
+let roleModels = require('../Modeli/Role');
+let Role = roleModels.Role;
+
+
 let bcrypt = require('bcrypt');
 
 module.exports = {
-    getIzvodjaci : (req, res) => {
-       Izvodjac.find({}, (err,izvodjaci) => {
-           res.send(izvodjaci);
-       });
+    getIzvodjaci: (req, res) => {
+        Izvodjac.find({}, (err, izvodjaci) => {
+            res.send(izvodjaci);
+        });
+        
+
     },
-    getIzvodjac : (req, res) => {
-        //odrediti po kom parametru se kreira upit 
-       Izvodjac.findOne({"Ime":req.query.ime}, (err,izvodjac) => {
-           res.send(izvodjac);
-       })
-    },
-    postIzvodjac : (req, res) => {
-        let data = req.body;
-        data.Password = bcrypt.hashSync(data.Password,5);
-        Izvodjac.insertMany([data], (err) => {
-            res.send("dodato");
+    getIzvodjac: (req, res) => {
+        Izvodjac.findById(req.params.id, (err, izvodjac) => {
+            Dogadjaj.find({ izvodjac: izvodjac }, '_id', (err, dog) => {
+                let lista = dog.map(x => x._id);
+                let i = {
+                    id: izvodjac._id,
+                    username : izvodjac.username,
+                    password : izvodjac.password,
+                    ime: izvodjac.ime,
+                    slika: izvodjac.slika,
+                    email: izvodjac.email,
+                    ocena: izvodjac.ocena,
+                    telefon: izvodjac.telefon,
+                    tip: izvodjac.tip,
+                    dogadjaji: lista
+                }
+
+                res.send(i);
+            })
         })
     },
-    postListaPesama : (req,res) => {
-        let lista = req.body.Lista_pesama;
-        let Username = req.body.Username;
-        Izvodjac.findOneAndUpdate({Username:Username},{$push:{Lista_pesama:lista}},{new:true},
-            (err,rezultat) => {
-                res.send(rezultat);
+    postIzvodjac: (req, res) => {
+        let data = req.body;
+        if (req.file != undefined || req.file != null) {
+            data.slika = req.file.path;
+        }
+        data.password = bcrypt.hashSync(data.password, 5);
+        Izvodjac.insertMany([data],{new: true} ,(err,doc) => {
+            let rola = {
+                userID:doc[0]._id,
+                username:doc[0].username,
+                password:doc[0].password,
+                rola:"Izvodjac"
+            }
+            Role.insertMany([rola], (err, rezultat) =>{
+                res.send(doc[0]);
             })
+            
+        })
     },
-    getPesme : (req,res) => {
-        Izvodjac.findOne({Username:req.query.Username},'Lista_pesama', (err,rezultat) => {
-           // console.log(rezultat);
-            let pesme = new Array();
-            for(let i =0, l=rezultat.Lista_pesama.length;i<l;i++)
+    // //treba da se preradi
+    // postListaPesama: (req, res) => {
+    //     let lista = req.body.Lista_pesama;
+    //     let Username = req.body.Username;
+    //     Izvodjac.findOneAndUpdate({ username: Username }, { $push: { pesme: lista } }, { new: true },
+    //         (err, rezultat) => {
+    //             res.send(rezultat);
+    //         })
+    // },
+    // getRepertoar: (req,res) => {
+
+    // },
+    // getDogadjajiPoIdIzvodjaca: (req,res) => {
+    //     Dogadjaj.find({izvodjac : req.params.idIzvodjaca})
+    //     .populate('idLokala','naziv telefon')
+    //     .exec((err,dogadjaj)=>{
+    //         console.log(dogadjaj);
+    //         let listavracanje = new Array();
+    //         dogadjaj.forEach(d => {
+    //             let dog = {
+    //                 _id : d.id,
+    //                 naziv : d.naziv,
+    //                 pocetak : d.pocetak,
+    //                 kraj : d.kraj,
+    //                 info : d.info,
+    //                 tip : d.tip,
+    //                 sifra : d.sifra,
+    //                 izvodjac : d.izvodjac,
+    //                 idLokala : d.idLokala._id,
+    //                 nazivLokala: d.idLokala.naziv,
+    //                 telefonLokala: d.idLokala.telefon 
+    //             }
+    //             listavracanje.push(dog);
+    //         })      
+    //         res.send(listavracanje);
+    //     })
+    // },
+    deleteIzvodjac : (req,res) =>{
+        Izvodjac.deleteOne({_id:req.params.id}, (err,doc) =>{
+            if(err)
             {
-                Pesma.findOne({_id:rezultat.Lista_pesama[i]},(err,pesma)=>{
-                    //console.log(rezultat.Lista_pesama[i]);
-                    pesme.push(pesma);
-                    //console.log(pesme);
-                    if(i==(l-1)) {
-                        res.send(pesme);
+                console.log(err);
+                res.status(404).json({message:"Brisanje neuspelo"});
+            }
+            else
+            {
+                Role.deleteOne({userID:req.params.id}, (err,rez) =>{
+                    if(err)
+                    {
+                        console.log(err);
+                        res.status(404).json({message:"Brisanje neuspelo"})
+                    }
+                    else
+                    {
+                        res.status(200).json({message:"Brisanje uspelo"});
                     }
                 })
             }
         })
-    }
-    /*postPesma : (req,res) => {
-        //let pesma = {Autor_i_Naziv : req.body.Autor_i_Naziv, Zanr : req.body.Zanr};
-        let pesma = new Pesma(req.body);
-        let ime = req.body.Ime;
-        //odrediti po kom parametru se kreira upit
-        Izvodjac.findOneAndUpdate({"Ime":ime},{ $push:{"Lista_pesama":pesma}},{new:true},(err,rezultat) =>{
-            res.send(rezultat);
-        });
     },
-    getPesme :(req,res) => {
-        let izv;
-        Izvodjac.find({"Ime":req.query.Ime},'Lista_pesama', (err,rezultat) =>{
-            res.send(rezultat);
-        })*/
+   
+    putIzvodjac : (req,res) => {
+		console.log("\nPUT IZVODJAC\n");
+		console.log(req.body);
+        let data = req.body;   
+        if (req.file != undefined || req.file != null) {
+            data.slika = req.file.path;
+        }
+        Izvodjac.findOneAndUpdate({_id:req.body._id}, data, (err,rez) =>{
+            if (err) {
+                console.log(err);
+                return res.status(400).json({ message: err });
+              }
+              return res.status(200).json({ result: rez });
+        })
+    }
+
 }

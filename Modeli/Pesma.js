@@ -3,10 +3,11 @@ let mongoose = require('mongoose');
 let pesmaSchema = new mongoose.Schema({
     /*Autor_i_Naziv: String,
     Zanr: String*/
-    Autor: String,
-    Naziv: String, 
-    Zanr: String,
-    Ukupni_glasovi: Number
+    autor: String,
+    naziv: String, 
+    zanr: String,
+    url: String,
+    glasovi: Number
 });
 
 
