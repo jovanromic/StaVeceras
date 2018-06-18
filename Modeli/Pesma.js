@@ -7,7 +7,7 @@ let pesmaSchema = new mongoose.Schema({
     naziv: String, 
     zanr: String,
     url: String,
-    glasovi: Number
+    ukupni_glasovi: Number
 });
 
 

@@ -51,7 +51,9 @@ router.route('/dogadjaj/:id').get(dogadjajKontroler.getDogadjaj);
 router.route('/dodaj-dogadjaj').post(dogadjajKontroler.postDogadjaj);
 router.route('/obrisi-dogadjaj/:id').delete(dogadjajKontroler.deleteDogadjaj);
 router.route('/izmeni-dogadjaj').put(dogadjajKontroler.putDogadjaj);
-
+router.route('/top-dogadjaji').get(dogadjajKontroler.getTopDogadjaji);
+router.route('/necessery-data/:id').get(dogadjajKontroler.getNecesseryData);
+router.route('/get-listu-pesama/:id').get(dogadjajKontroler.getDogadjajPesme);
 //router.route('/pesma').post(izvodjacKontroler.postPesma);
 //router.route('/pesme').get(izvodjacKontroler.getPesme);
 //router.route('/dogadjaj').post(lokalKontroler.postDogadjaj);
@@ -64,6 +66,7 @@ router.route('/toplista').get(pesmaKontroler.getTopLista);
 router.route('/dodaj-pesmu').post(pesmaKontroler.postPesma);
 router.route('/obrisi-pesmu/:id').delete(pesmaKontroler.deletePesma);
 router.route('/dodaj-pesmu-izvodjacu').put(pesmaKontroler.putPesmaUListu);
+router.route('/kreiraj-pesma-izvodjac').post(pesmaKontroler.postPesmaIzvodjac);
 
 router.route('/login').post(rolaKontroler.login);
 //za rutu /pesma get handler je getPesma iz uvezenog movieCtrl

@@ -20,6 +20,9 @@ let bcrypt = require('bcrypt');
 module.exports = {
     getIzvodjaci: (req, res) => {
         Izvodjac.find({}, (err, izvodjaci) => {
+            // izvodjaci.forEach(d => {
+            //     d.ocena = (d.ocena/d.brGlasanja);
+            // })
             res.send(izvodjaci);
         });
         
@@ -37,6 +40,8 @@ module.exports = {
                     slika: izvodjac.slika,
                     email: izvodjac.email,
                     ocena: izvodjac.ocena,
+                    brGlasanja: izvodjac.brGlasanja,
+                    fbStranica: izvodjac.fbStranica,
                     telefon: izvodjac.telefon,
                     tip: izvodjac.tip,
                     dogadjaji: lista
@@ -52,6 +57,7 @@ module.exports = {
             data.slika = req.file.path;
         }
         data.password = bcrypt.hashSync(data.password, 5);
+        //data.brGlasanja = 1;
         Izvodjac.insertMany([data],{new: true} ,(err,doc) => {
             let rola = {
                 userID:doc[0]._id,
@@ -126,7 +132,7 @@ module.exports = {
         })
     },
    
-    putIzvodjac : (req,res) => {
+    putIzvodjac : (req,res) => { 
 		console.log("\nPUT IZVODJAC\n");
 		console.log(req.body);
         let data = req.body;   

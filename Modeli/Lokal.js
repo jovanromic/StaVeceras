@@ -26,6 +26,7 @@ let lokalSchema = new mongoose.Schema({
     info: String,
     slika: String,
     ocena: Number,
+    brGlasanja: Number,
     fbStranica : String,
     telefon: String,
     dogadjaji: [{type:mongoose.Schema.Types.ObjectId, ref:'Dogadjaj'}]

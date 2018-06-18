@@ -14,7 +14,8 @@ let dogadjajSchema = new mongoose.Schema({
     kraj: Date,
     info: String,
     tip: String,
-    sifra: String, //sifra String
+    sifra: String,
+    topDogadjaj: Boolean,
     izvodjac: {type: mongoose.Schema.Types.ObjectId, ref: 'Izvodjac'},
     idLokala: {type: mongoose.Schema.Types.ObjectId, ref: 'Lokal'}
 }, { collection: 'dogadjaj' });

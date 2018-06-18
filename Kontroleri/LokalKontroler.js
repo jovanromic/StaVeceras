@@ -18,10 +18,11 @@ module.exports = {
             .exec((err, lokal) => {
                 res.send(lokal);
             })
-    },
+    },// populate: { path: 'izvodjac', select: '-_id ime' }
+
     getLokalDogadjaji: (req, res) => {
         Lokal.findById(req.params.id)
-            .populate({ path: 'dogadjaji', populate: { path: 'izvodjac', select: '-_id ime' }, select: '-idLokala' })
+            .populate({ path: 'dogadjaji', select: '-idLokala' })
             .exec((err, lokal) => {
                 let rezultat = {
                     dogadjaji: lokal.dogadjaji

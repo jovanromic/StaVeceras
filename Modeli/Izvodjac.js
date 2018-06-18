@@ -16,6 +16,8 @@ let izvodjacSchema = new mongoose.Schema({
     slika: String,
     email: String,
     ocena: Number,
+    brGlasanja: Number,
+    fbStranica: String,
     telefon: String,
     tip: String,
     pesme: [{type:mongoose.Schema.Types.ObjectId,ref:'Pesma'}] //ne treba jocku, vracamo mu bez

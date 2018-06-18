@@ -40,7 +40,7 @@ module.exports = {
             }
         })
     },
-    getTopLista: (err, res) => {
+    getTopLista: (req, res) => {
         Pesma.find({}).sort('-glasovi').limit(25).exec((err, pesme) => {
             res.send(pesme)
         })
@@ -74,6 +74,32 @@ module.exports = {
             }
         })
     },
+    postPesmaIzvodjac:(req,res) => {
+        //var pesma = new Pesma(req.body);
+        let pesma = {
+            autor:  req.body.autor,
+            naziv: req.body.naziv,
+            zanr: req.body.zanr,
+            url: req.body.url,
+            ukupni_glasovi: req.body.ukupni_glasovi
+        }
+        var pesma1 = new Pesma(pesma);
+        console.log(pesma);
+        Izvodjac.findByIdAndUpdate(req.body.idIzvodjaca, { $push: { pesme: pesma1 } }, { safe: true, upsert: true }, (err, doc) => {
+            if (err) {
+                console.log(err);
+            } else {
+                //do stuff
+            }
+        })
+        Pesma.insertMany(pesma1, (err, result) => {
+            if (err) console.log(err);
+            else {
+                console.log("dodao");
+                res.status(200).json({ message: "dodato" });
+            }
+        })
+    },
     putPesmaUListu:(req, res) => {
         Izvodjac.findByIdAndUpdate(req.body.idIzvodjaca, {$push: {pesme: req.body.idPesme}}, (err,doc) => {
             if(err) {
@@ -83,5 +109,15 @@ module.exports = {
                 res.status(201).json({message: "Dodavanje pesme uspelo!"});
             }
         })
-    }
+    },
+    /////////PROBA////////////////
+    // getPesmeGlasanje:(pesme) =>{
+    //     // pesme = Pesma.find({});
+    //     // return pesme;
+    //     Pesma.find({}).exec().then((res)=>{
+    //         pesme = res;
+    //         return pesme;
+    //     })
+        
+    // }
 }
