@@ -64,17 +64,8 @@ io.on('connection', (socket) => {
     dogadjaji[id][pesma]++;
     console.log("dogadjaji["+id+"]["+pesma+"] = \n"+dogadjaji[id][pesma]+'');
     let event = 'glasanje_' + id + '';
-    io.emit(event, {idPesme:pesma }, ()=>{
-      Pesma.update({_id:pesma}, {$inc:{ukupni_glasovi}}, (err)=>{
-        if(err)
-        {
-          console.log("Update pesme neuspeo");
-        }
-        else{
-          console.log("Update pesme uspeo");
-        }
-      })
-    });
+    io.emit(event, {idPesme:pesma });
+      
   })
   socket.on('kraj-dogadjaj',(data)=>{
 
