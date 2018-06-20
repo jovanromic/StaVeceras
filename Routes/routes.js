@@ -67,8 +67,10 @@ router.route('/dodaj-pesmu').post(pesmaKontroler.postPesma);
 router.route('/obrisi-pesmu/:id').delete(pesmaKontroler.deletePesma);
 router.route('/dodaj-pesmu-izvodjacu').put(pesmaKontroler.putPesmaUListu);
 router.route('/kreiraj-pesma-izvodjac').post(pesmaKontroler.postPesmaIzvodjac);
+router.route('/izbrisi-iz-liste').put(pesmaKontroler.deletePesmaIzvodjac);
 
 router.route('/login').post(rolaKontroler.login);
+router.route('/kreiraj-admina').post(rolaKontroler.kreirajAdmina);
 //za rutu /pesma get handler je getPesma iz uvezenog movieCtrl
 
 

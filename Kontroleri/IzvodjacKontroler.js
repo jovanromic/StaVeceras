@@ -20,36 +20,54 @@ let bcrypt = require('bcrypt');
 module.exports = {
     getIzvodjaci: (req, res) => {
         Izvodjac.find({}, (err, izvodjaci) => {
-            // izvodjaci.forEach(d => {
-            //     d.ocena = (d.ocena/d.brGlasanja);
-            // })
-            res.send(izvodjaci);
+            if (err) {
+                console.log(err);
+                res.status(404).json({ message: "Greska" });
+            }
+            else
+                res.send(izvodjaci);
         });
-        
+
 
     },
     getIzvodjac: (req, res) => {
-        Izvodjac.findById(req.params.id, (err, izvodjac) => {
-            Dogadjaj.find({ izvodjac: izvodjac }, '_id', (err, dog) => {
-                let lista = dog.map(x => x._id);
-                let i = {
-                    id: izvodjac._id,
-                    username : izvodjac.username,
-                    password : izvodjac.password,
-                    ime: izvodjac.ime,
-                    slika: izvodjac.slika,
-                    email: izvodjac.email,
-                    ocena: izvodjac.ocena,
-                    brGlasanja: izvodjac.brGlasanja,
-                    fbStranica: izvodjac.fbStranica,
-                    telefon: izvodjac.telefon,
-                    tip: izvodjac.tip,
-                    dogadjaji: lista
+        if (req.params.id == null || req.params.id == undefined) {
+            res.status(400).json({ message: "Greska" });
+        }
+        else {
+            Izvodjac.findById(req.params.id, (err, izvodjac) => {
+                if (err) {
+                    res.status(404).json({ message: "Greska" });
                 }
+                else {
+                    Dogadjaj.find({ izvodjac: izvodjac }, '_id', (err, dog) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(404).json({ message: "Not found" });
+                        }
+                        else {
+                            let lista = dog.map(x => x._id);
+                            let i = {
+                                id: izvodjac._id,
+                                username: izvodjac.username,
+                                password: izvodjac.password,
+                                ime: izvodjac.ime,
+                                slika: izvodjac.slika,
+                                email: izvodjac.email,
+                                ocena: izvodjac.ocena,
+                                brGlasanja: izvodjac.brGlasanja,
+                                fbStranica: izvodjac.fbStranica,
+                                telefon: izvodjac.telefon,
+                                tip: izvodjac.tip,
+                                dogadjaji: lista
+                            }
 
-                res.send(i);
+                            res.send(i);
+                        }
+                    })
+                }
             })
-        })
+        }
     },
     postIzvodjac: (req, res) => {
         let data = req.body;
@@ -58,17 +76,28 @@ module.exports = {
         }
         data.password = bcrypt.hashSync(data.password, 5);
         //data.brGlasanja = 1;
-        Izvodjac.insertMany([data],{new: true} ,(err,doc) => {
-            let rola = {
-                userID:doc[0]._id,
-                username:doc[0].username,
-                password:doc[0].password,
-                rola:"Izvodjac"
+        Izvodjac.insertMany([data], { new: true }, (err, doc) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ message: "Greska" });
             }
-            Role.insertMany([rola], (err, rezultat) =>{
-                res.send(doc[0]);
-            })
-            
+            else {
+                let rola = {
+                    userID: doc[0]._id,
+                    username: doc[0].username,
+                    password: doc[0].password,
+                    rola: "Izvodjac"
+                }
+                Role.insertMany([rola], (err, rezultat) => {
+                    if (err) {
+                        res.status(500).json({ message: "greska" });
+                    }
+                    else {
+                        res.send(doc[0]);
+                    }
+                })
+
+            }
         })
     },
     // //treba da se preradi
@@ -108,43 +137,44 @@ module.exports = {
     //         res.send(listavracanje);
     //     })
     // },
-    deleteIzvodjac : (req,res) =>{
-        Izvodjac.deleteOne({_id:req.params.id}, (err,doc) =>{
-            if(err)
-            {
-                console.log(err);
-                res.status(404).json({message:"Brisanje neuspelo"});
-            }
-            else
-            {
-                Role.deleteOne({userID:req.params.id}, (err,rez) =>{
-                    if(err)
-                    {
-                        console.log(err);
-                        res.status(404).json({message:"Brisanje neuspelo"})
-                    }
-                    else
-                    {
-                        res.status(200).json({message:"Brisanje uspelo"});
-                    }
-                })
-            }
-        })
+    deleteIzvodjac: (req, res) => {
+        if (req.params.id == null || req.params.id == undefined) {
+            res.status(400).json({ message: "Greska" });
+        }
+        else {
+            Izvodjac.deleteOne({ _id: req.params.id }, (err, doc) => {
+                if (err) {
+                    console.log(err);
+                    res.status(404).json({ message: "Brisanje neuspelo" });
+                }
+                else {
+                    Role.deleteOne({ userID: req.params.id }, (err, rez) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(404).json({ message: "Brisanje neuspelo" })
+                        }
+                        else {
+                            res.status(200).json({ message: "Brisanje uspelo" });
+                        }
+                    })
+                }
+            })
+        }
     },
-   
-    putIzvodjac : (req,res) => { 
-		console.log("\nPUT IZVODJAC\n");
-		console.log(req.body);
-        let data = req.body;   
+
+    putIzvodjac: (req, res) => {
+        console.log("\nPUT IZVODJAC\n");
+        console.log(req.body);
+        let data = req.body;
         if (req.file != undefined || req.file != null) {
             data.slika = req.file.path;
         }
-        Izvodjac.findOneAndUpdate({_id:req.body._id}, data, (err,rez) =>{
+        Izvodjac.findOneAndUpdate({ _id: req.body._id }, data, (err, rez) => {
             if (err) {
                 console.log(err);
                 return res.status(400).json({ message: err });
-              }
-              return res.status(200).json({ result: rez });
+            }
+            return res.status(200).json({ result: rez });
         })
     }
 

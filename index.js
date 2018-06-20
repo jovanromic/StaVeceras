@@ -14,7 +14,9 @@ var server = require('http').Server(app);
 var io = socketio(server);
 io.path('/');
 let pesmeModels = require('./Modeli/Pesma');
+let dogadjajModels = require('./Modeli/Dogadjaj');
 let Pesma = pesmeModels.Pesma;
+let Dogadjaj = dogadjajModels.Dogadjaj;
 let dogadjaji = [];
 
 io.on('connection', (socket) => {
@@ -28,20 +30,24 @@ io.on('connection', (socket) => {
   //   console.log(dogadjaji);
   // })
   socket.on('start-dogadjaj', (data) => {
-    console.log("start dogadjaj");
-    console.log("dogadjaj id: " + data.idDogadjaja);
-    console.log(data.lista);
-    let id = data.idDogadjaja;
-    let lista2 = JSON.parse(data.lista);
-    if (dogadjaji[id] === null || dogadjaji[id] === undefined) {
-      dogadjaji[id] = new Array();
-      lista2.forEach(x => {
-        dogadjaji[id][x._id] = 0;
-      });
-      console.log("dogadjaji= ");
-      console.log(dogadjaji)
-      console.log("dogadjaj[" + id + "]=");
-      console.log(dogadjaji[id]);
+    if (data.idDogadjaja != null && data.idDogadjaja != undefined &&
+      data.lista != null && data.lista != undefined) {
+
+      console.log("start dogadjaj");
+      console.log("dogadjaj id: " + data.idDogadjaja);
+      console.log(data.lista);
+      let id = data.idDogadjaja;
+      let lista2 = JSON.parse(data.lista);
+      if (dogadjaji[id] == null || dogadjaji[id] == undefined) {
+        dogadjaji[id] = new Array();
+        lista2.forEach(x => {
+          dogadjaji[id][x._id] = 0;
+        });
+        console.log("dogadjaji= ");
+        console.log(dogadjaji)
+        console.log("dogadjaj[" + id + "]=");
+        console.log(dogadjaji[id]);
+      }
     }
 
     // let str='konekcija_'+data.dogadjajId+'';
@@ -49,26 +55,76 @@ io.on('connection', (socket) => {
   });
   socket.on('get-ranking-list', (data) => {
     let id = data.dogadjajId;
-    // console.log("zahtev za ranking listom za id: "+id);
     let url = 'ranking-list_' + id + '';
-    // console.log("saljem na: "+url);
-    // console.log(dogadjaji[id]);
-    console.log(dogadjaji[id]);
-    var dog = Object.assign({},dogadjaji[id]);
-    socket.emit(url, JSON.stringify(dog));
+    if (dogadjaji[id] != null || dogadjaji[id] != undefined) {
+
+      let url = 'ranking-list_' + id + '';
+      // console.log("saljem na: "+url);
+      // console.log(dogadjaji[id]);
+      console.log(dogadjaji[id]);
+      let dog = Object.assign({}, dogadjaji[id]);
+      socket.emit(url, JSON.stringify(dog));
+
+    }
+    else {
+      socket.emit(url, { message: "greska" });
+    }
   })
   socket.on('glasanje', (data) => {
     let id = data.dogadjajId;//idDogadjaja?
     let pesma = data.idPesme;
-    console.log("glasanje na dogadjaju "+id+" za pesmu "+pesma);
-    dogadjaji[id][pesma]++;
-    console.log("dogadjaji["+id+"]["+pesma+"] = \n"+dogadjaji[id][pesma]+'');
     let event = 'glasanje_' + id + '';
-    io.emit(event, {idPesme:pesma });
-      
-  })
-  socket.on('kraj-dogadjaj',(data)=>{
+    if (id != null && id != undefined != pesma != null && pesma != undefined) {
 
+      if (dogadjaji[id] !== [] || dogadjaji[id] !== []) {//mozda treba null i undefinedno
+
+        console.log("glasanje na dogadjaju " + id + " za pesmu " + pesma);
+        dogadjaji[id][pesma]++;
+        console.log("dogadjaji[" + id + "][" + pesma + "] = \n" + dogadjaji[id][pesma] + '');
+        Pesma.updateOne({ _id: pesma }, { $inc: { ukupni_glasovi: 1 } }, (err, raw) => {
+          if (err) {
+            console.log(err);
+          }
+          else {
+            io.emit(event, { idPesme: pesma });
+          }
+        })
+
+      }
+      else {
+        socket.emit(event, { message: "greska" });
+      }
+    }
+  })
+  socket.on('kraj-dogadjaj', (data) => {
+    let id = data.dogadjajId;
+    if (id != null || id != undefined) {
+      delete dogadjaji[id];
+      console.log(dogadjaji);
+      let event = 'kraj-dogadjaj_' + id + '';
+      Dogadjaj.deleteOne({ _id: id }, (err, res) => {
+        if (err) {
+          console.log(err);
+        }
+        else {
+          io.emit(event, { data: "Zavrsen dogadjaj" });
+        }
+      })
+
+    }
+  })
+  socket.on('reset', (data) => {
+    let id = data.dogadjajId;
+    let pesma = data.idPesme;
+    let event = 'glasanje_' + id + '';
+    if (id != null && id != undefined != pesma != null && pesma != undefined) {
+      dogadjaj[id][pesma] = 0;
+      console.log(dogadjaj[id]);
+      io.emit(event, { idPesme: pesma });
+    }
+    else {
+      socket.emit(event, { message: "greska" });
+    }
   })
   //socket.emit('news', { hello: 'world' });
 
