@@ -114,13 +114,14 @@ io.on('connection', (socket) => {
     }
   })
   socket.on('reset', (data) => {
+	console.log("reset socket");
     let id = data.dogadjajId;
     let pesma = data.idPesme;
     let event = 'glasanje_' + id + '';
     if (id != null && id != undefined != pesma != null && pesma != undefined) {
-      dogadjaj[id][pesma] = 0;
-      console.log(dogadjaj[id]);
-      io.emit(event, { idPesme: pesma });
+      dogadjaji[id][pesma] = 0;
+      console.log(dogadjaji[id]);
+      io.emit(event, { idPesme: pesma , resetPesme:"reset"});
     }
     else {
       socket.emit(event, { message: "greska" });

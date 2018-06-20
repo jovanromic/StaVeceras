@@ -37,6 +37,7 @@ router.route('/izvodjac/:id').get(izvodjacKontroler.getIzvodjac);
 router.route('/dodaj-izvodjaca').post(upload.single('slika'),izvodjacKontroler.postIzvodjac);
 router.route('/delete-izvodjac/:id').delete(izvodjacKontroler.deleteIzvodjac);
 router.route('/izmeni-izvodjaca').put(upload.single('slika'),izvodjacKontroler.putIzvodjac);
+router.route('/top-tri-izvodjaca').get(izvodjacKontroler.getTopIzvodjaci);
 
 router.route('/lokaldogadjaji/:id').get(lokalKontroler.getLokalDogadjaji);
 router.route('/lokali').get(lokalKontroler.getLokali);
