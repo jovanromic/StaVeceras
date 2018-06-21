@@ -91,7 +91,7 @@ module.exports = {
             res.status(400).json({ message: "Greska" });
         }
         else {
-            Dogadjaj.findById(req.params.id).populate('idLokala', 'naziv').exec((err, d) => {
+            Dogadjaj.findById(req.params.id).populate('idLokala', 'naziv slika').exec((err, d) => {
                 if (err) {
                     res.status(404).json({ message: "Greska" });
                 }
@@ -124,7 +124,8 @@ module.exports = {
                                 topDogadjaj: d.topDogadjaj,
                                 izvodjac: ime,
                                 idLokala: d.idLokala._id,
-                                nazivLokala: d.idLokala.naziv
+                                nazivLokala: d.idLokala.naziv,
+                                slikaLokala: d.idLokala.slika
                             }
                             res.send(rezultat);
                         }
