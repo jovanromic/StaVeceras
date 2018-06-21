@@ -11,7 +11,7 @@ module.exports = {
     getDogadjaji: (req, res) => {
         Dogadjaj.find({})
             .populate('izvodjac', '-_id ime')
-            .populate('idLokala', 'naziv telefon')
+            .populate('idLokala', 'naziv telefon slika')
             .exec((err, dogadjaj) => {
                 if (err) {
                     res.status(404).json({ message: "Greska" });
@@ -37,7 +37,8 @@ module.exports = {
                             izvodjac: ime,
                             idLokala: d.idLokala._id,
                             nazivLokala: d.idLokala.naziv,
-                            telefonLokala: d.idLokala.telefon
+                            telefonLokala: d.idLokala.telefon,
+                            slikaLokala: d.idLokala.slika
                         }
                         listavracanje.push(dog);
                     })
@@ -237,7 +238,7 @@ module.exports = {
         }
         else {
             Dogadjaj.find({ izvodjac: req.params.idIzvodjaca })
-                .populate('idLokala', 'naziv telefon')
+                .populate('idLokala', 'naziv telefon slika')
                 .exec((err, dogadjaj) => {
                     if (err) {
                         console.log(err);
@@ -259,7 +260,8 @@ module.exports = {
                                 izvodjac: d.izvodjac,
                                 idLokala: d.idLokala._id,
                                 nazivLokala: d.idLokala.naziv,
-                                telefonLokala: d.idLokala.telefon
+                                telefonLokala: d.idLokala.telefon,
+                                slikaLokala: d.idLokala.slika
                             }
                             listavracanje.push(dog);
                         })

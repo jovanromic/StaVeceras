@@ -29,7 +29,7 @@ module.exports = {
         });
     },
     getTopIzvodjaci: (req, res) => {//slika,ime,id,ocena,fbstranica
-        Izvodjac.find({}).sort('-ocena').limit(3).select('ime _id ocena fbStranica slika').exec((err, izvodjaci) => {
+        Izvodjac.find({}).sort('-ocena').limit(3).select('ime _id ocena fbStranica slika tip').exec((err, izvodjaci) => {
             if (err) {
                 res.status(500).json({ message: "Greska" });
             }
